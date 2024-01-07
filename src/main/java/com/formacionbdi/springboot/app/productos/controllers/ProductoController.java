@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,13 +16,16 @@ import com.formacionbdi.springboot.app.productos.models.service.IProductoService
 @RestController
 public class ProductoController {
 	// Atributo para obtener el puerto configurado en el archivo ".properties"
-	@Autowired
-	private Environment env;
+	//@Autowired
+	//private Environment env;
 
-	// Inyectamos el valor del key "server.port" configurado en el archivo
+	// Inyeccion el valor del key "server.port" configurado en el archivo
 	// ".properties"
 	@Value("${server.port}")
 	private Integer port;
+
+	@Autowired
+	private ServletWebServerApplicationContext webServerAppCtxt;
 
 	@Autowired
 	private IProductoService productoService;
@@ -36,7 +39,11 @@ public class ProductoController {
 			// producto.setPort(Integer.parseInt(env.getProperty("local.server.port")));
 
 			// 2° Opcion usando la anotación "@Value"
-			producto.setPort(this.port);
+			//producto.setPort(this.port);
+			
+			//3° Opcion usando la clase "ServletWebServerApplicationContext"
+			producto.setPort(this.webServerAppCtxt.getWebServer().getPort());
+			
 			return producto;
 		}).collect(Collectors.toList());
 
@@ -57,7 +64,10 @@ public class ProductoController {
 		// producto.setPort(Integer.parseInt(env.getProperty("local.server.port")));
 
 		// 2° Opcion usando la anotación "@Value"
-		producto.setPort(this.port);
+		// producto.setPort(this.port);
+
+		// 3° Opcion usando la clase "ServletWebServerApplicationContext"
+		producto.setPort(this.webServerAppCtxt.getWebServer().getPort());
 
 		return producto;
 	}
