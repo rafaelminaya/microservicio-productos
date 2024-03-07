@@ -1,6 +1,7 @@
 package com.formacionbdi.springboot.app.productos.controllers;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,27 @@ public class ProductoController {
 	}
 
 	@GetMapping("/ver/{id}")
-	public Producto detalle(@PathVariable Long id) {
+	public Producto detalle(@PathVariable Long id) throws InterruptedException {
+		
+		/*
+		 * 3° Simulación: Lanzamiento de excepción
+		 * Lanzaremos una excepción para cuando el ID sea igual a 10
+		 */	
+		
+		if(id.equals(10L)) {
+			throw new IllegalStateException("Producto no encontrado.");
+		}
+		
+		/*
+		 * 4° Simulación: Forzamos un timeout de 5 segundos cuando el id sea 7
+		 * Lanzaremos una excepción para cuando el ID sea igual a 10
+		 */	
+		
+		if(id.equals(7L)) {
+			// Equivalente a : Thread.sleep(5000L);
+			TimeUnit.SECONDS.sleep(5L);
+		}
+		
 
 		Producto producto = this.productoService.findById(id);
 		// 1° Opcion usando la interfaz "Environment"
@@ -71,7 +92,7 @@ public class ProductoController {
 		producto.setPort(this.webServerAppCtxt.getWebServer().getPort());
 
 		/*
-		 * 1° Simulación:
+		 * 1° Simulación: Lanzamiento de excepción
 		 * Forzamos un error en este microservicio, para probar el "circuit breker" de "Hystrix"
 		 * Por lo que abriremos un "circuito alternativo" en el controlador del proyecto "servicio-items" 
 		 */
@@ -97,6 +118,7 @@ public class ProductoController {
 			e.printStackTrace();
 		}
 		*/
+				
 
 		return producto;
 	}
